@@ -1,0 +1,10 @@
+
+// Histórico de refactorizaciones. Herramienta: Refactor -> History
+
+// Fichero .zip con código fuente del nuevo sistema refactorizado
+
+// Memoria con url al repositorio, histórico y respuestas a preguntas
+
+	 - ¿Se  puede  automatizar  completamente  el  proceso  de  refactorización    a  través  de  herramientas?
+	 
+	 - ¿Qué  relación  encuentras  entre  el  proceso  de  refactorización  y  la  utilización  de  sistemas  de  controlde  tareas  y  versiones?
