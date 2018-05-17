@@ -171,16 +171,10 @@ which should be treated by all nodes.
 
 		Node currentNode = firstNode_;
 		Packet packet = new Packet("BROADCAST", firstNode_.name_, firstNode_.name_);
-		do {
-			try {
-				currentNode.acceptBroadcastPackage(report);
-				currentNode.logging(report);
-			} catch (IOException exc) {
-				// just ignore
-			};
-			currentNode = currentNode.nextNode_;
-		} while (currentNode.atDestination(packet.destination_));
-
+		
+		boolean broadcast = true;
+		currentNode = send(currentNode, packet, report, broadcast);
+		
 		try {
 			report.write(">>> Broadcast travelled whole token ring.\n\n");
 		} catch (IOException exc) {
@@ -217,27 +211,14 @@ Therefore #receiver sends a packet across the token ring network, until either
 		};
 
 		boolean result = false;
-		Node startNode, currentNode;
+		Node currentNode;
 		Packet packet = new Packet(document, workstation, printer);
 
-		startNode = (Node) workstations_.get(workstation);
-
-		try {
-			startNode.logging(report);
-		} catch (IOException exc) {
-			// just ignore
-		};
-		currentNode = startNode.nextNode_;
-		while (currentNode.atDestination(packet.destination_)
-				& currentNode.atDestination(packet.origin_)) {
-			try {
-				currentNode.logging(report);
-			} catch (IOException exc) {
-				// just ignore
-			};
-			currentNode = currentNode.nextNode_;
-		};
-
+		currentNode = (Node) workstations_.get(workstation);
+		
+		boolean broadcast = false;
+		currentNode = send(currentNode, packet, report, broadcast);
+		
 		if (packet.destination_.equals(currentNode.name_)) {
 			result = packet.print(currentNode, report);
 		} else {
@@ -253,6 +234,23 @@ Therefore #receiver sends a packet across the token ring network, until either
 		return result;
 	}
 
+	private Node send(Node n, Packet p, Writer r, boolean broadcast) {
+		do {
+			try {
+				if(broadcast){
+					n.acceptBroadcastPackage(r);
+				}
+				n.logging(r);
+			}catch(IOException exc) {
+				// just ignore
+			}
+			
+			n = n.nextNode_;
+		} while(n.atDestination(p.destination_) 
+				& ((broadcast)?true:n.atDestination(p.origin_)));
+		return n;
+	}
+	
 	/**
 Return a printable representation of #receiver.
  <p><strong>Precondition:</strong> isInitialized();</p>
