@@ -173,9 +173,7 @@ which should be treated by all nodes.
 		Packet packet = new Packet("BROADCAST", firstNode_.name_, firstNode_.name_);
 		do {
 			try {
-				report.write("\tNode '");
-				report.write(currentNode.name_);
-				report.write("' accepts broadcase packet.\n");
+				currentNode.acceptBroadcastPackage(report);
 				currentNode.logging(report);
 			} catch (IOException exc) {
 				// just ignore
@@ -189,7 +187,7 @@ which should be treated by all nodes.
 			// just ignore
 		};
 		return true;
-	}    
+	}
 
 	/**
 The #receiver is requested by #workstation to print #document on #printer.

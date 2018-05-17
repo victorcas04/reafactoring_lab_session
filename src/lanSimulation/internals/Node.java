@@ -86,4 +86,10 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 		report.flush();
 	}
 
+	public void acceptBroadcastPackage(Writer report) throws IOException {
+		report.write("\tNode '");
+		report.write(name_);
+		report.write("' accepts broadcase packet.\n");
+	}
+
 }
