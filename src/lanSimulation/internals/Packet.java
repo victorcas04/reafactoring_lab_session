@@ -19,6 +19,11 @@
  */
 package lanSimulation.internals;
 
+import java.io.IOException;
+import java.io.Writer;
+
+import lanSimulation.Network;
+
 /**
 A <em>Packet</em> represents a unit of information to be sent over the Local Area Network (LAN).
  */
@@ -36,6 +41,9 @@ public class Packet {
 	 */
 	public String destination_;
 
+	private String author = "Unknown";
+	private String title = "Untitled";
+	
 	/**
 Construct a <em>Packet</em> with given #message and #destination.
 	 */
@@ -52,6 +60,55 @@ Construct a <em>Packet</em> with given #message, #origin and #receiver.
 		message_ = message;
 		origin_ = origin;
 		destination_ = destination;
+	}
+
+	private void accounting(Writer report, String message) throws IOException {
+		report.write("\tAccounting -- author = '");
+		report.write(this.author);
+		report.write("' -- title = '");
+		report.write(this.title);
+		report.write("'\n");
+		report.write(">>> " + message + ".\n\n");
+		report.flush();
+	}
+	
+	public boolean print (Node printer, Writer report) {
+		
+		int startPos = 0, endPos = 0;
+	
+		if (printer.type_ == Node.PRINTER) {
+			try {
+				if (message_.startsWith("!PS")) {
+					startPos = message_.indexOf("author:");
+					if (startPos >= 0) {
+						endPos = message_.indexOf(".", startPos + 7);
+						if (endPos < 0) {endPos = message_.length();};
+						author = message_.substring(startPos + 7, endPos);};
+						startPos = message_.indexOf("title:");
+						if (startPos >= 0) {
+							endPos = message_.indexOf(".", startPos + 6);
+							if (endPos < 0) {endPos = message_.length();};
+							title = message_.substring(startPos + 6, endPos);}
+							accounting(report, "Postscript job delivered");
+				} else {
+					title = "ASCII DOCUMENT";
+					if (message_.length() >= 16) {
+						author = message_.substring(8, 16);};
+						accounting(report, "ASCII Print job delivered");
+				};
+			} catch (IOException exc) {
+				// just ignore
+			};
+			return true;
+		} else {
+			try {
+				report.write(">>> Destinition is not a printer, print job cancelled.\n\n");
+				report.flush();
+			} catch (IOException exc) {
+				// just ignore
+			};
+			return false;
+		}
 	}
 
 }
