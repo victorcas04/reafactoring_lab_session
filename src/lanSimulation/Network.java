@@ -20,6 +20,9 @@
 package lanSimulation;
 
 import lanSimulation.internals.*;
+import lanSimulation.internals.Node.WorkStation;
+import lanSimulation.internals.Node.Printer;
+
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.io.*;
@@ -38,7 +41,7 @@ public class Network {
     Holds a pointer to some "first" node in the token ring.
     Used to ensure that various printing operations return expected behaviour.
 	 */
-	private Node firstNode_;
+	public Node firstNode_;
 	/**
     Maps the names of workstations on the actual workstations.
     Used to initiate the requests for the network.
@@ -70,10 +73,14 @@ Currently, the network looks as follows.
 	public static Network DefaultExample () {
 		Network network = new Network (2);
 
-		Node wsFilip = new Node (Node.WORKSTATION, "Filip");
-		Node n1 = new Node(Node.NODE, "n1");
-		Node wsHans = new Node (Node.WORKSTATION, "Hans");
-		Node prAndy = new Node (Node.PRINTER, "Andy");
+		//Node wsFilip = new Node (Node.WORKSTATION, "Filip");
+		//Node n1 = new Node(Node.NODE, "n1");
+		//Node wsHans = new Node (Node.WORKSTATION, "Hans");
+		//Node prAndy = new Node (Node.PRINTER, "Andy");
+		WorkStation wsFilip = new Node().new WorkStation("Filip");
+		Node n1 = new Node("n1");
+		WorkStation wsHans = new Node().new WorkStation("Hans");
+		Printer prAndy = new Node().new Printer("Andy");
 
 		wsFilip.nextNode_ = n1;
 		n1.nextNode_ = wsHans;
@@ -82,7 +89,7 @@ Currently, the network looks as follows.
 
 		network.workstations_.put(wsFilip.name_, wsFilip);
 		network.workstations_.put(wsHans.name_, wsHans);
-		network.firstNode_ = wsFilip;
+		network.firstNode_ = (Node) wsFilip;
 
 		assert network.isInitialized();
 		assert network.consistentNetwork();
@@ -262,74 +269,19 @@ Return a printable representation of #receiver.
 		return buf.toString();
 	}
 
-	/**
-Write a printable representation of #receiver on the given #buf.
-<p><strong>Precondition:</strong> isInitialized();</p>
-	 */
 	public void printOn (StringBuffer buf) {
 		assert isInitialized();
-		Node currentNode = firstNode_;
-		do {
-			currentNode.switchPrintTypeNode(buf);
-			buf.append(" -> ");
-			currentNode = currentNode.nextNode_;
-		} while (currentNode != firstNode_);
-		buf.append(" ... ");
+		firstNode_.printOn(buf);
 	}
-
-	/**
-Write a HTML representation of #receiver on the given #buf.
- <p><strong>Precondition:</strong> isInitialized();</p>
-	 */
+	
 	public void printHTMLOn (StringBuffer buf) {
 		assert isInitialized();
-
-		buf.append("<HTML>\n<HEAD>\n<TITLE>LAN Simulation</TITLE>\n</HEAD>\n<BODY>\n<H1>LAN SIMULATION</H1>");
-		Node currentNode = firstNode_;
-		buf.append("\n\n<UL>");
-		do {
-			buf.append("\n\t<LI> ");
-			currentNode.switchPrintTypeNode(buf);
-			buf.append(" </LI>");
-			currentNode = currentNode.nextNode_;
-		} while (currentNode != firstNode_);
-		buf.append("\n\t<LI>...</LI>\n</UL>\n\n</BODY>\n</HTML>\n");
+		firstNode_.printHTMLOn(buf);
 	}
-
-	/**
-Write an XML representation of #receiver on the given #buf.
-<p><strong>Precondition:</strong> isInitialized();</p>
-	 */
+	
 	public void printXMLOn (StringBuffer buf) {
 		assert isInitialized();
-
-		Node currentNode = firstNode_;
-		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<network>");
-		do {
-			buf.append("\n\t");
-			switch (currentNode.type_) {
-			case Node.NODE:
-				buf.append("<node>");
-				buf.append(currentNode.name_);
-				buf.append("</node>");
-				break;
-			case Node.WORKSTATION:
-				buf.append("<workstation>");
-				buf.append(currentNode.name_);
-				buf.append("</workstation>");
-				break;
-			case Node.PRINTER:
-				buf.append("<printer>");
-				buf.append(currentNode.name_);
-				buf.append("</printer>");
-				break;
-			default:
-				buf.append("<unknown></unknown>");;
-				break;
-			};
-			currentNode = currentNode.nextNode_;
-		} while (currentNode != firstNode_);
-		buf.append("\n</network>");
+		firstNode_.printXMLOn(buf);
 	}
-
+	
 }

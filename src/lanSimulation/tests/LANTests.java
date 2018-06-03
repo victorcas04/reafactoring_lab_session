@@ -181,7 +181,7 @@ public class LANTests extends TestCase {
 
     public void testBroadcast() {
         Network network = Network.DefaultExample();
-	StringWriter report = new StringWriter(500);
+        StringWriter report = new StringWriter(500);
 
         assertTrue("Broadcast ",
 		   network.requestBroadcast(report));

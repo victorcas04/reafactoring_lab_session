@@ -57,6 +57,14 @@ public class Node {
 	 */
 	public Node nextNode_;
 
+	public Node() {
+		
+	}
+	
+	public Node(String name) {
+		name_ = name;
+	}
+	
 	/**
 Construct a <em>Node</em> with given #type and #name.
 <p><strong>Precondition:</strong> (type >= NODE) & (type <= PRINTER);</p>
@@ -92,25 +100,21 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 		report.write("' accepts broadcase packet.\n");
 	}
 
-	public void switchPrintTypeNode(StringBuffer buf) {
+	public void switchPrintTypeNode(StringBuffer buf, boolean t) {
 		switch (type_) {
 		case Node.NODE:
-			buf.append("Node ");
+			buf.append(t ? "Node ": "<node>");
 			buf.append(name_);
-			buf.append(" [Node]");
+			buf.append(t ? " [Node]": "</node>");
 			break;
 		case Node.WORKSTATION:
-			buf.append("Workstation ");
-			buf.append(name_);
-			buf.append(" [Workstation]");
+			new WorkStation(name_).printOnSwitch(buf, t);
 			break;
 		case Node.PRINTER:
-			buf.append("Printer ");
-			buf.append(name_);
-			buf.append(" [Printer]");
+			new Printer(name_).printOnSwitch(buf, t);
 			break;
 		default:
-			buf.append("(Unexpected)");;
+			buf.append(t ? "(Unexpected)": "<unknown></unknown>");
 			break;
 		};
 	}
@@ -119,4 +123,89 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 		return ! destinationOrigin.equals(name_);
 	}
 
+	/**
+	Write a printable representation of #receiver on the given #buf.
+	<p><strong>Precondition:</strong> isInitialized();</p>
+	 * @param network TODO
+	 * @param buf TODO
+	 */
+	public void printOn (StringBuffer buf) {
+
+		Node currentNode = this;
+		do {
+			currentNode.switchPrintTypeNode(buf, true);
+			buf.append(" -> ");
+			currentNode = currentNode.nextNode_;
+		} while (checkCurrentNode(currentNode));
+		buf.append(" ... ");
+	}
+
+	/**
+	Write an XML representation of #receiver on the given #buf.
+	<p><strong>Precondition:</strong> isInitialized();</p>
+	 * @param network TODO
+	 * @param buf TODO
+	 */
+	public void printXMLOn (StringBuffer buf) {
+	
+		Node currentNode = this;
+		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<network>");
+		do {
+			buf.append("\n\t");
+			switchPrintTypeNode(buf, false);
+			currentNode = currentNode.nextNode_;
+		} while (checkCurrentNode(currentNode));
+		buf.append("\n</network>");
+	}
+
+	/**
+	Write a HTML representation of #receiver on the given #buf.
+	<p><strong>Precondition:</strong> isInitialized();</p>
+	 * @param network TODO
+	 * @param buf TODO
+	 */
+	public void printHTMLOn (StringBuffer buf) {
+	
+		buf.append("<HTML>\n<HEAD>\n<TITLE>LAN Simulation</TITLE>\n</HEAD>\n<BODY>\n<H1>LAN SIMULATION</H1>");
+		Node currentNode = this;
+		buf.append("\n\n<UL>");
+		do {
+			buf.append("\n\t<LI> ");
+			currentNode.switchPrintTypeNode(buf, true);
+			buf.append(" </LI>");
+			currentNode = currentNode.nextNode_;
+		} while (checkCurrentNode(currentNode));
+		buf.append("\n\t<LI>...</LI>\n</UL>\n\n</BODY>\n</HTML>\n");
+	}
+	
+	private boolean checkCurrentNode(Node currentNode) {
+		return currentNode != this;
+	}
+	
+	public class WorkStation extends Node{
+		
+		public WorkStation(String name_) {
+			super(WORKSTATION, name_);
+		}
+		
+		private void printOnSwitch(StringBuffer buf, boolean t) {
+			buf.append(t ? "Workstation ": "<workstation>");
+			buf.append(name_);
+			buf.append(t ? " [Workstation]": "</workstation>");
+		}
+	}
+	
+	public class Printer extends Node{
+		
+		public Printer(String name_) {
+			super(PRINTER, name_);
+		}
+		
+		private void printOnSwitch(StringBuffer buf, boolean t) {
+			buf.append(t ? "Printer ": "<printer>");
+			buf.append(name_);
+			buf.append(t ? " [Printer]": "</printer>");
+		}
+	}
+	
 }
