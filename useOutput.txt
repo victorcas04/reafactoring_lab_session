@@ -10,10 +10,10 @@ Workstation Filip [Workstation] -> Node n1 [Node] -> Workstation Hans [Workstati
 <H1>LAN SIMULATION</H1>
 
 <UL>
-	<LI> Workstation Filip [Workstation] </LI>
-	<LI> Node n1 [Node] </LI>
-	<LI> Workstation Hans [Workstation] </LI>
-	<LI> Printer Andy [Printer] </LI>
+	<LI> <workstation>Filip</workstation> </LI>
+	<LI> <node>n1</node> </LI>
+	<LI> <workstation>Hans</workstation> </LI>
+	<LI> <printer>Andy</printer> </LI>
 	<LI>...</LI>
 </UL>
 
@@ -25,10 +25,10 @@ Workstation Filip [Workstation] -> Node n1 [Node] -> Workstation Hans [Workstati
 <?xml version="1.0" encoding="UTF-8"?>
 
 <network>
-	<workstation>Filip</workstation>
-	<node>n1</node>
-	<workstation>Hans</workstation>
-	<printer>Andy</printer>
+	Workstation Filip [Workstation]
+	Node n1 [Node]
+	Workstation Hans [Workstation]
+	Printer Andy [Printer]
 </network>
 
 ---------------------------------SCENARIO: Print Success --------------------------

@@ -33,20 +33,20 @@ public class Node {
 	/**
     A node with type NODE has only basic functionality.
 	 */
-	public static final byte NODE = 0;
+	//public static final byte NODE = 0;
 	/**
     A node with type WORKSTATION may initiate requests on the LAN.
 	 */
-	public static final byte WORKSTATION = 1;
+	//public static final byte WORKSTATION = 1;
 	/**
     A node with type PRINTER may accept packages to be printed.
 	 */
-	public static final byte PRINTER = 2;
+	//public static final byte PRINTER = 2;
 
 	/**
     Holds the type of the Node.
 	 */
-	public byte type_;
+	//public byte type_;
 	/**
     Holds the name of the Node.
 	 */
@@ -56,7 +56,7 @@ public class Node {
     @see lanSimulation.internals.Node
 	 */
 	public Node nextNode_;
-
+	
 	public Node() {
 		
 	}
@@ -69,24 +69,26 @@ public class Node {
 Construct a <em>Node</em> with given #type and #name.
 <p><strong>Precondition:</strong> (type >= NODE) & (type <= PRINTER);</p>
 	 */
+	/*
 	public Node(byte type, String name) {
 		assert (type >= NODE) & (type <= PRINTER);
 		type_ = type;
 		name_ = name;
 		nextNode_ = null;
 	}
-
+*/
 	/**
 Construct a <em>Node</em> with given #type and #name, and which is linked to #nextNode.
 <p><strong>Precondition:</strong> (type >= NODE) & (type <= PRINTER);</p>
 	 */
+	/*
 	public Node(byte type, String name, Node nextNode) {
 		assert (type >= NODE) & (type <= PRINTER);
 		type_ = type;
 		name_ = name;
 		nextNode_ = nextNode;
 	}
-
+*/
 	public void logging(Writer report) throws IOException {
 		report.write("\tNode '");
 		report.write(name_);
@@ -99,7 +101,7 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 		report.write(name_);
 		report.write("' accepts broadcase packet.\n");
 	}
-
+/*
 	public void switchPrintTypeNode(StringBuffer buf, boolean t) {
 		switch (type_) {
 		case Node.NODE:
@@ -118,7 +120,13 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 			break;
 		};
 	}
-
+*/
+	private void printOnSwitch(StringBuffer buf, boolean isHtml) {
+		buf.append(!isHtml ? "Node ": "<node>");
+		buf.append(name_);
+		buf.append(!isHtml ? " [Node]": "</node>");
+	}
+	
 	public boolean atDestination(String destinationOrigin) {
 		return ! destinationOrigin.equals(name_);
 	}
@@ -133,13 +141,30 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 
 		Node currentNode = this;
 		do {
-			currentNode.switchPrintTypeNode(buf, true);
+			//currentNode.switchPrintTypeNode(buf, true);
+			checkTypeOfNode(currentNode, buf, false);
 			buf.append(" -> ");
 			currentNode = currentNode.nextNode_;
 		} while (checkCurrentNode(currentNode));
 		buf.append(" ... ");
 	}
 
+	private void checkTypeOfNode(Node currentNode, StringBuffer buf, boolean isHtml) {
+		if(currentNode instanceof Workstation) {
+			((Workstation) currentNode).printOnSwitch(buf, isHtml);
+		} else if(currentNode instanceof Printer) {
+			((Printer) currentNode).printOnSwitch(buf, isHtml);
+		} else if(currentNode instanceof Node) {
+			currentNode.printOnSwitch(buf, isHtml);
+		} else {
+			printUnknownOn(buf, isHtml);
+		}
+	}
+	
+	public void printUnknownOn(StringBuffer buf, boolean isHtml) {
+		buf.append(isHtml ? "(Unexpected)": "<unknown></unknown>");
+	}
+	
 	/**
 	Write an XML representation of #receiver on the given #buf.
 	<p><strong>Precondition:</strong> isInitialized();</p>
@@ -152,7 +177,9 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<network>");
 		do {
 			buf.append("\n\t");
-			switchPrintTypeNode(buf, false);
+			//switchPrintTypeNode(buf, false);
+			//currentNode.printOnSwitch(buf, false);
+			checkTypeOfNode(currentNode, buf, false);
 			currentNode = currentNode.nextNode_;
 		} while (checkCurrentNode(currentNode));
 		buf.append("\n</network>");
@@ -171,7 +198,9 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 		buf.append("\n\n<UL>");
 		do {
 			buf.append("\n\t<LI> ");
-			currentNode.switchPrintTypeNode(buf, true);
+			//currentNode.switchPrintTypeNode(buf, true);
+			//currentNode.printOnSwitch(buf, true);
+			checkTypeOfNode(currentNode, buf, true);
 			buf.append(" </LI>");
 			currentNode = currentNode.nextNode_;
 		} while (checkCurrentNode(currentNode));
@@ -182,29 +211,31 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 		return currentNode != this;
 	}
 	
-	public class WorkStation extends Node{
+	public class Workstation extends Node{
 		
-		public WorkStation(String name_) {
-			super(WORKSTATION, name_);
+		public Workstation(String name_) {
+			//super(WORKSTATION, name_);
+			super(name_);
 		}
 		
-		private void printOnSwitch(StringBuffer buf, boolean t) {
-			buf.append(t ? "Workstation ": "<workstation>");
+		public void printOnSwitch(StringBuffer buf, boolean isHtml) {
+			buf.append(!isHtml ? "Workstation ": "<workstation>");
 			buf.append(name_);
-			buf.append(t ? " [Workstation]": "</workstation>");
+			buf.append(!isHtml ? " [Workstation]": "</workstation>");
 		}
 	}
 	
 	public class Printer extends Node{
 		
 		public Printer(String name_) {
-			super(PRINTER, name_);
+			//super(PRINTER, name_);
+			super(name_);
 		}
 		
-		private void printOnSwitch(StringBuffer buf, boolean t) {
-			buf.append(t ? "Printer ": "<printer>");
+		public void printOnSwitch(StringBuffer buf, boolean isHtml) {
+			buf.append(!isHtml ? "Printer ": "<printer>");
 			buf.append(name_);
-			buf.append(t ? " [Printer]": "</printer>");
+			buf.append(!isHtml ? " [Printer]": "</printer>");
 		}
 	}
 	

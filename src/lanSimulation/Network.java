@@ -20,8 +20,8 @@
 package lanSimulation;
 
 import lanSimulation.internals.*;
-import lanSimulation.internals.Node.WorkStation;
 import lanSimulation.internals.Node.Printer;
+import lanSimulation.internals.Node.Workstation;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -73,15 +73,16 @@ Currently, the network looks as follows.
 	public static Network DefaultExample () {
 		Network network = new Network (2);
 
+
 		//Node wsFilip = new Node (Node.WORKSTATION, "Filip");
 		//Node n1 = new Node(Node.NODE, "n1");
 		//Node wsHans = new Node (Node.WORKSTATION, "Hans");
 		//Node prAndy = new Node (Node.PRINTER, "Andy");
-		WorkStation wsFilip = new Node().new WorkStation("Filip");
+				
+		Workstation wsFilip = new Node().new Workstation("Filip");
 		Node n1 = new Node("n1");
-		WorkStation wsHans = new Node().new WorkStation("Hans");
+		Workstation wsHans = new Node().new Workstation("Hans");
 		Printer prAndy = new Node().new Printer("Andy");
-
 		wsFilip.nextNode_ = n1;
 		n1.nextNode_ = wsHans;
 		wsHans.nextNode_ = prAndy;
@@ -116,7 +117,8 @@ Answer whether #receiver contains a workstation with the given name.
 		if (n == null) {
 			return false;
 		} else {
-			return n.type_ == Node.WORKSTATION;
+			//return n.type_ == Node.WORKSTATION;
+			return n instanceof Workstation;
 		}
 	};
 
@@ -142,15 +144,16 @@ A consistent token ring network
 		iter = workstations_.elements();
 		while (iter.hasMoreElements()) {
 			currentNode = (Node) iter.nextElement();
-			if (currentNode.type_ != Node.WORKSTATION) {return false;};
+			//if (currentNode.type_ != Node.WORKSTATION) {return false;};
+			if (!(currentNode instanceof Workstation)) {return false;};
 		};
 		//enumerate the token ring, verifying whether all workstations are registered
 		//also count the number of printers and see whether the ring is circular
 		currentNode = firstNode_;
 		while (! encountered.containsKey(currentNode.name_)) {
 			encountered.put(currentNode.name_, currentNode);
-			if (currentNode.type_ == Node.WORKSTATION) {workstationsFound++;};
-			if (currentNode.type_ == Node.PRINTER) {printersFound++;};
+			if (currentNode instanceof Workstation) {workstationsFound++;};
+			if (currentNode instanceof Printer) {printersFound++;};
 			currentNode = currentNode.nextNode_;
 		};
 		if (currentNode != firstNode_) {return false;};//not circular

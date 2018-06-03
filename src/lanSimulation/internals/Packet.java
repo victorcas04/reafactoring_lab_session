@@ -76,7 +76,8 @@ Construct a <em>Packet</em> with given #message, #origin and #receiver.
 		
 		int startPos = 0, endPos = 0;
 	
-		if (printer.type_ == Node.PRINTER) {
+		//if (printer.type_ == Node.PRINTER) {
+		if (printer instanceof Node.Printer) {
 			try {
 				if (message_.startsWith("!PS")) {
 					startPos = message_.indexOf("author:");
