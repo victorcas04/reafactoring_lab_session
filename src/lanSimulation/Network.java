@@ -72,11 +72,6 @@ Currently, the network looks as follows.
 	public static Network DefaultExample () {
 		Network network = new Network (2);
 
-
-		//Node wsFilip = new Node (Node.WORKSTATION, "Filip");
-		//Node n1 = new Node(Node.NODE, "n1");
-		//Node wsHans = new Node (Node.WORKSTATION, "Hans");
-		//Node prAndy = new Node (Node.PRINTER, "Andy");	
 		Workstation wsFilip = new Node().new Workstation("Filip");
 		Node n1 = new Node("n1");
 		Workstation wsHans = new Node().new Workstation("Hans");
@@ -107,7 +102,6 @@ Answer whether #receiver contains a workstation with the given name.
 <p><strong>Precondition:</strong>this.isInitialized();</p>
 	 */
 	public boolean hasWorkstation (String ws) {
-		//return workstations_.containsKey(ws);
 		Node n;
 
 		assert isInitialized();
@@ -115,7 +109,6 @@ Answer whether #receiver contains a workstation with the given name.
 		if (n == null) {
 			return false;
 		} else {
-			//return n.type_ == Node.WORKSTATION;
 			return n instanceof Workstation;
 		}
 	};
@@ -142,7 +135,6 @@ A consistent token ring network
 		iter = workstations_.elements();
 		while (iter.hasMoreElements()) {
 			currentNode = (Node) iter.nextElement();
-			//if (currentNode.type_ != Node.WORKSTATION) {return false;};
 			if (!(currentNode instanceof Workstation)) {return false;};
 		};
 		//enumerate the token ring, verifying whether all workstations are registered
@@ -242,6 +234,16 @@ Therefore #receiver sends a packet across the token ring network, until either
 		return result;
 	}
 
+	/**
+	 * Envía un paquete por la red hasta que llega al nodo destino
+	 *  (puede incluir una opción broadcast que lo envía a todos sin distinción)
+	 * @param n nodo al que se le envia el paquete
+	 * @param p paquete con la información enviada
+	 * @param r donde se guarda dicha información
+	 * @param broadcast nos permite distinguir entre los paquetes de tipo broadcast y los normales
+	 * @return nodo al que se le envia el paquete
+	 */
+	
 	private Node send(Node n, Packet p, Writer r, boolean broadcast) {
 		do {
 			try {
@@ -266,22 +268,30 @@ Return a printable representation of #receiver.
 	public String toString () {
 		assert isInitialized();
 		StringBuffer buf = new StringBuffer(30 * workstations_.size());
+		assert isInitialized();
 		printOn(buf);
 		return buf.toString();
 	}
 
+	/**
+	 * @deprecated Use {@link Node#printOn(StringBuffer)} instead
+	 */
+	@Deprecated
 	public void printOn (StringBuffer buf) {
-		assert isInitialized();
 		firstNode_.printOn(buf);
 	}
-	
+	/**
+	 * @deprecated Use {@link Node#printHTMLOn(StringBuffer)} instead
+	 */
+	@Deprecated
 	public void printHTMLOn (StringBuffer buf) {
-		assert isInitialized();
 		firstNode_.printHTMLOn(buf);
 	}
-	
+	/**
+	 * @deprecated Use {@link Node#printXMLOn(StringBuffer)} instead
+	 */
+	@Deprecated
 	public void printXMLOn (StringBuffer buf) {
-		assert isInitialized();
 		firstNode_.printXMLOn(buf);
 	}
 	
