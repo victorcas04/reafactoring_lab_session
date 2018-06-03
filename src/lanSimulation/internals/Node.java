@@ -212,7 +212,7 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 	}
 	
 	public class Workstation extends Node{
-		
+				
 		public Workstation(String name_) {
 			//super(WORKSTATION, name_);
 			super(name_);
@@ -226,7 +226,7 @@ Construct a <em>Node</em> with given #type and #name, and which is linked to #ne
 	}
 	
 	public class Printer extends Node{
-		
+				
 		public Printer(String name_) {
 			//super(PRINTER, name_);
 			super(name_);

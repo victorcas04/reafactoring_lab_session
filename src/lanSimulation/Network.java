@@ -20,8 +20,7 @@
 package lanSimulation;
 
 import lanSimulation.internals.*;
-import lanSimulation.internals.Node.Printer;
-import lanSimulation.internals.Node.Workstation;
+import lanSimulation.internals.Node.*;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -77,8 +76,7 @@ Currently, the network looks as follows.
 		//Node wsFilip = new Node (Node.WORKSTATION, "Filip");
 		//Node n1 = new Node(Node.NODE, "n1");
 		//Node wsHans = new Node (Node.WORKSTATION, "Hans");
-		//Node prAndy = new Node (Node.PRINTER, "Andy");
-				
+		//Node prAndy = new Node (Node.PRINTER, "Andy");	
 		Workstation wsFilip = new Node().new Workstation("Filip");
 		Node n1 = new Node("n1");
 		Workstation wsHans = new Node().new Workstation("Hans");
